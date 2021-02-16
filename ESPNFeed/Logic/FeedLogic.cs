@@ -1,4 +1,5 @@
-﻿using ESPNFeed.Interfaces;
+﻿using ESPNFeed.Enums;
+using ESPNFeed.Interfaces;
 using ESPNFeed.Models.Input;
 using ESPNFeed.Models.Outputs;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ namespace ESPNFeed.Logic
 
         public List<FeedResponse> GetFeed(FeedRequest feedRequest, ILogger log)
         {
-            string feedURL = GetFeedURL(feedRequest, log);
+            string feedURL = GetFeedURL(feedRequest.Feed, log);
 
             SyndicationFeed feed = _feedData.GetFeedData(feedURL, log);
 
@@ -28,9 +29,9 @@ namespace ESPNFeed.Logic
             return feedResponses;
         }
 
-        public string GetFeedURL(FeedRequest feedRequest, ILogger log)
+        public string GetFeedURL(FeedEnum feed, ILogger log)
         {
-            string feedURL = Environment.GetEnvironmentVariable(feedRequest.Feed.ToString());
+            string feedURL = Environment.GetEnvironmentVariable(feed.ToString());
 
             log.LogInformation("Grabbed FeedURL: " + feedURL);
 
@@ -47,7 +48,7 @@ namespace ESPNFeed.Logic
                 {
                     Title = item.Title.Text,
                     Description = item.Summary.Text,
-                    Link = item.Links[0].Uri.AbsoluteUri
+                    Link = item.Links.Count == 0 ? string.Empty : item.Links[0].Uri.AbsoluteUri
                 });
             }
 
