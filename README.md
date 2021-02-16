@@ -4,7 +4,16 @@
   <p>Get the latest ESPN RSS Feeds for your favorite sports.</p>
 </div>
 <div style="display: flex;">
-
+  <img src="https://img.shields.io/github/last-commit/robynstanco/ESPNFeedFunction/master?logo=github"/>
+  <img src="https://img.shields.io/github/languages/code-size/robynstanco/ESPNFeedFunction?logo=github"/>
+  <img src="https://img.shields.io/github/repo-size/robynstanco/ESPNFeedFunction?logo=github"/>
+  <img src="https://img.shields.io/github/issues/robynstanco/ESPNFeedFunction?logo=github"/>
+  <img src="https://img.shields.io/github/issues-closed/robynstanco/ESPNFeedFunction?logo=github"/>
+  <img src="https://img.shields.io/github/issues-pr-closed/robynstanco/ESPNFeedFunction?logo=github"/>
+  <img src="https://img.shields.io/github/stars/robynstanco/ESPNFeedFunction?logo=github"/>
+  <img src="https://img.shields.io/github/languages/top/robynstanco/ESPNFeedFunction?logo=github"/>
+  <img src="https://img.shields.io/github/languages/count/robynstanco/ESPNFeedFunction?logo=github"/>
+  <img src="https://img.shields.io/github/license/robynstanco/ESPNFeedFunction?logo=github"/>
 </div>
 <div>
   <h3>Technologies & Methodologies</h3>
