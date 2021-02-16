@@ -1,8 +1,8 @@
-﻿using ESPNFeed.Logic;
+﻿using ESPNFeed.Data;
 using ESPNFeed.Interfaces;
+using ESPNFeed.Logic;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using ESPNFeed.Data;
 
 [assembly: FunctionsStartup(typeof(ESPNFeed.Startup))]
 
@@ -12,8 +12,8 @@ namespace ESPNFeed
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddSingleton<IFeedLogic, FeedLogic>();
             builder.Services.AddSingleton<IFeedData, FeedData>();
+            builder.Services.AddSingleton<IFeedLogic, FeedLogic>();
         }
     }
 }
