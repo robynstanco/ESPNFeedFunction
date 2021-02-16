@@ -1,42 +1,72 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using ESPNFeed.Interfaces;
+using ESPNFeed.Models.Input;
+using ESPNFeed.Models.Outputs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using ESPNFeed.Models.Input;
+using System;
 using System.Collections.Generic;
-using ESPNFeed.Models.Outputs;
-using ESPNFeed.Interfaces;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace ESPNFeed.Functions
 {
     public class RequestESPNFeed
     {
-        IFeedData _feedData;
-        public RequestESPNFeed(IFeedData feedData)
+        IFeedLogic _feedLogic;
+        public RequestESPNFeed(IFeedLogic feedLogic)
         {
-            _feedData = feedData;
+            _feedLogic = feedLogic;
         }
 
-        [FunctionName("RequestESPNFeed")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "api/RequestESPNFeed")] HttpRequest request,
-            ILogger log)
+        [FunctionName(nameof(RequestESPNFeed))]
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = nameof(RequestESPNFeed))] HttpRequest request, ILogger log)
         {
-            log.LogInformation("Requesting ESPN feed for sport");
+            try
+            {
+                log.LogInformation("Requesting ESPN Feed!");
 
-            //Deserialize
-            string requestBody = await new StreamReader(request.Body).ReadToEndAsync();
-            FeedRequest feedRequest = JsonConvert.DeserializeObject<FeedRequest>(requestBody);
+                //Deserialize request to hard typed FeedRequest
+                string requestBody = await new StreamReader(request.Body).ReadToEndAsync();
+                FeedRequest feedRequest = JsonConvert.DeserializeObject<FeedRequest>(requestBody);
+                if(feedRequest.Feed == 0)
+                {
+                    throw new ArgumentNullException();
+                }
 
-            //Logic
-            List<FeedResponse> feedResponses = _feedData.GetFeedData(feedRequest);
+                log.LogInformation("Deserialized " + nameof(FeedRequest) + ".");
 
-            return new OkObjectResult(feedResponses);
+                List<FeedResponse> feedResponses = _feedLogic.GetFeed(feedRequest, log);
+
+                return new OkObjectResult(feedResponses);
+            }
+            catch(ArgumentNullException argsNullEx)
+            {
+                log.LogError(argsNullEx, argsNullEx.Message);
+
+                return new BadRequestObjectResult("Please enter a valid Feed!");
+            }
+            catch(JsonReaderException jsonReaderEx)
+            {
+                log.LogError(jsonReaderEx, jsonReaderEx.Message);
+
+                return new BadRequestObjectResult("Unable to read the malformed request!");
+            }
+            catch(JsonSerializationException jsonSerializationEx)
+            {
+                log.LogError(jsonSerializationEx, jsonSerializationEx.Message);
+
+                return new BadRequestObjectResult("Unable to deserialize the request!");
+            }
+            catch(Exception ex)
+            {
+                log.LogError(ex, ex.Message);
+
+                return new BadRequestObjectResult("An unexpected error occured: " + ex.Message);
+            }
         }
     }
 }

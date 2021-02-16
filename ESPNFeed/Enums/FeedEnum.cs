@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESPNFeed.Enums
+﻿namespace ESPNFeed.Enums
 {
     public enum FeedEnum : int
     {

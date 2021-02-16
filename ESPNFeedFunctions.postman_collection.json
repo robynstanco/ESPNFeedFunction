@@ -1,29 +1,36 @@
 {
-	"variables": [],
 	"info": {
+		"_postman_id": "f2d94553-9c3a-4645-b79f-bb63422ee1cd",
 		"name": "ESPNFeedFunctions",
-		"_postman_id": "c852a9f1-8664-8a2c-6e48-274a3fa51307",
-		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "ESPNFeedFunctions",
 			"request": {
-				"url": "http://localhost:7071/api/api/RequestESPNFeed",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"Feed\": \"MLB\",\n\t\"NumberOfResults\": \"5\"\n}"
+					"raw": "{\n\t\"Feed\": \"MLB\",\n\t\"MaxNumberOfResults\": -5\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:7071/api/RequestESPNFeed",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"RequestESPNFeed"
+					]
+				}
 			},
 			"response": []
 		}

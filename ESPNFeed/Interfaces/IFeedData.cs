@@ -1,14 +1,10 @@
-﻿using ESPNFeed.Models.Input;
-using ESPNFeed.Models.Outputs;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
+using System.ServiceModel.Syndication;
 
 namespace ESPNFeed.Interfaces
 {
     public interface IFeedData
     {
-        List<FeedResponse> GetFeedData(FeedRequest feedRequest);
+        SyndicationFeed GetFeedData(string feedURL, ILogger log);
     }
 }

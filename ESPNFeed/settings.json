@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "MLB": "https://www.espn.com/espn/rss/mlb/news",
+    "NBA": "https://www.espn.com/espn/rss/nba/news",
+    "NFL": "https://www.espn.com/espn/rss/nfl/news",
+    "NHL": " https://www.espn.com/espn/rss/nhl/news"
+  }
+}
