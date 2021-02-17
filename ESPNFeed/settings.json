@@ -4,6 +4,10 @@
     "MLB": "https://www.espn.com/espn/rss/mlb/news",
     "NBA": "https://www.espn.com/espn/rss/nba/news",
     "NFL": "https://www.espn.com/espn/rss/nfl/news",
-    "NHL": " https://www.espn.com/espn/rss/nhl/news"
+    "NHL": " https://www.espn.com/espn/rss/nhl/news",
+
+    "ESPNFeedDBConnectionString": "AccountEndpoint=INSERT_LOCAL_HERE",
+    "ESPNFeedDBName": "ESPNFeedDB",
+    "ESPNFeedContainerName": "Archive"
   }
 }

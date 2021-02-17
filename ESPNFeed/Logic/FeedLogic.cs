@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
+using System.Threading.Tasks;
 
 namespace ESPNFeed.Logic
 {
@@ -18,7 +19,14 @@ namespace ESPNFeed.Logic
             _feedData = feedData;
         }
 
-        public List<FeedResponse> GetFeed(FeedRequest feedRequest, ILogger log)
+        /// <summary>
+        /// Get & map the feed responses based on the given feed request. 
+        /// Archive feeds only if requested.
+        /// </summary>
+        /// <param name="feedRequest">the feed request</param>
+        /// <param name="log">logger instance</param>
+        /// <returns></returns>
+        public async Task<List<FeedResponse>> GetFeed(FeedRequest feedRequest, ILogger log)
         {
             string feedURL = GetFeedURL(feedRequest.Feed, log);
 
@@ -26,9 +34,20 @@ namespace ESPNFeed.Logic
 
             List<FeedResponse> feedResponses = MapSyndicationFeedToFeedResponses(feed, feedRequest.MaxNumberOfResults, log);
 
+            if (feedRequest.Archive && feedResponses.Count > 0)
+            {
+                await _feedData.ArchiveFeedData(feedResponses, log);
+            }
+
             return feedResponses;
         }
 
+        /// <summary>
+        /// Grab the feed url based on the feed enum from configuration.
+        /// </summary>
+        /// <param name="feed">feed enum</param>
+        /// <param name="log">logger instance</param>
+        /// <returns></returns>
         public string GetFeedURL(FeedEnum feed, ILogger log)
         {
             string feedURL = Environment.GetEnvironmentVariable(feed.ToString());
@@ -38,6 +57,13 @@ namespace ESPNFeed.Logic
             return feedURL;
         }
 
+        /// <summary>
+        /// Map the SyndicationFeed Items to a list of FeedResponses. Only map the maximum requested.
+        /// </summary>
+        /// <param name="feed">syndication feed to map</param>
+        /// <param name="maxResults">requested max results to map</param>
+        /// <param name="log">logger instance</param>
+        /// <returns>mapped feed responses</returns>
         public List<FeedResponse> MapSyndicationFeedToFeedResponses(SyndicationFeed feed, int maxResults, ILogger log)
         {
             List<FeedResponse> feedResponses = new List<FeedResponse>();
@@ -48,7 +74,8 @@ namespace ESPNFeed.Logic
                 {
                     Title = item.Title.Text,
                     Description = item.Summary.Text,
-                    Link = item.Links.Count == 0 ? string.Empty : item.Links[0].Uri.AbsoluteUri
+                    Link = item.Links.Count == 0 ? string.Empty : item.Links[0].Uri.AbsoluteUri, //only first url needed (often only entry)
+                    id = item.Title.Text
                 });
             }
 

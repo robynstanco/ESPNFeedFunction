@@ -9,6 +9,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel.Syndication;
+using System.Threading.Tasks;
 
 namespace ESPNFeed.Tests
 {
@@ -44,7 +45,7 @@ namespace ESPNFeed.Tests
         }
 
         [TestMethod]
-        public void GetFeedCallsDataMapsSyndicationFeedAndLogsInformation()
+        public async Task GetFeedCallsDataMapsSyndicationFeedAndLogsInformation()
         {
             FeedRequest feedRequest = new FeedRequest() 
             { 
@@ -52,13 +53,41 @@ namespace ESPNFeed.Tests
                 MaxNumberOfResults = 1 
             };
 
-            List<FeedResponse> feedResponses = _feedLogic.GetFeed(feedRequest, _loggerMock.Object);
+            List<FeedResponse> feedResponses = await _feedLogic.GetFeed(feedRequest, _loggerMock.Object);
 
             Assert.AreEqual(1, feedResponses.Count);
             Assert.AreEqual("title", feedResponses[0].Title);
             Assert.AreEqual("summary", feedResponses[0].Description);
 
             _feedDataMock.Verify(fdm => fdm.GetFeedData(It.IsAny<string>(), _loggerMock.Object), Times.Once);
+
+            _loggerMock.Verify(l => l.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()), Times.Exactly(2));
+
+            _loggerMock.VerifyNoOtherCalls();
+
+            _feedDataMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public async Task GetFeedWithArchiveCallsData()
+        {
+            FeedRequest feedRequest = new FeedRequest()
+            {
+                Feed = FeedEnum.MLB,
+                MaxNumberOfResults = 1,
+                Archive = true
+            };
+
+            List<FeedResponse> feedResponses = await _feedLogic.GetFeed(feedRequest, _loggerMock.Object);
+
+            Assert.AreEqual(1, feedResponses.Count);
+            Assert.AreEqual("title", feedResponses[0].Title);
+            Assert.AreEqual("summary", feedResponses[0].Description);
+
+            _feedDataMock.Verify(fdm => fdm.GetFeedData(It.IsAny<string>(), _loggerMock.Object), Times.Once);
+
+            _feedDataMock.Verify(fdm => fdm.ArchiveFeedData(feedResponses, _loggerMock.Object), Times.Once);
 
             _loggerMock.Verify(l => l.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(),
                 (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()), Times.Exactly(2));

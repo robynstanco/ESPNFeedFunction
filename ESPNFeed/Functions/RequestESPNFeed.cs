@@ -3,6 +3,7 @@ using ESPNFeed.Models.Input;
 using ESPNFeed.Models.Outputs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
@@ -32,6 +33,7 @@ namespace ESPNFeed.Functions
                 //Deserialize request to hard typed FeedRequest
                 string requestBody = await new StreamReader(request.Body).ReadToEndAsync();
                 FeedRequest feedRequest = JsonConvert.DeserializeObject<FeedRequest>(requestBody);
+
                 if(feedRequest.Feed == 0)
                 {
                     throw new ArgumentNullException();
@@ -39,7 +41,7 @@ namespace ESPNFeed.Functions
 
                 log.LogInformation("Deserialized " + nameof(FeedRequest) + ".");
 
-                List<FeedResponse> feedResponses = _feedLogic.GetFeed(feedRequest, log);
+                List<FeedResponse> feedResponses = await _feedLogic.GetFeed(feedRequest, log);
 
                 return new OkObjectResult(feedResponses);
             }
@@ -48,6 +50,12 @@ namespace ESPNFeed.Functions
                 log.LogError(argsNullEx, argsNullEx.Message);
 
                 return new BadRequestObjectResult("Please enter a valid Feed!");
+            }
+            catch(CosmosException cosmosEx)
+            {
+                log.LogError(cosmosEx, cosmosEx.Message);
+
+                return new BadRequestObjectResult("Unable to archive data: " + cosmosEx.Message);
             }
             catch(JsonReaderException jsonReaderEx)
             {
@@ -61,7 +69,7 @@ namespace ESPNFeed.Functions
 
                 return new BadRequestObjectResult("Unable to deserialize the request!");
             }
-            catch(Exception ex)
+            catch(Exception ex) //unhandled exception, return 400 with message instead of vague 500 server error.
             {
                 log.LogError(ex, ex.Message);
 
