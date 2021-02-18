@@ -74,7 +74,7 @@ namespace ESPNFeed.Logic
                 {
                     Title = item.Title.Text,
                     Description = item.Summary.Text,
-                    Link = item.Links.Count == 0 ? string.Empty : item.Links[0].Uri.AbsoluteUri, //only first url needed (often only entry)
+                    Link = item.Links.Count == 0 ? string.Empty : item.Links[0].Uri.AbsoluteUri, //only first url needed (often only one entry anyway)
                     id = item.Title.Text
                 });
             }
