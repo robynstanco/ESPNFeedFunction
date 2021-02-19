@@ -81,10 +81,6 @@ namespace ESPNFeed.Tests
 
             List<FeedResponse> feedResponses = await _feedLogic.GetFeed(feedRequest, _loggerMock.Object);
 
-            Assert.AreEqual(1, feedResponses.Count);
-            Assert.AreEqual("title", feedResponses[0].Title);
-            Assert.AreEqual("summary", feedResponses[0].Description);
-
             _feedDataMock.Verify(fdm => fdm.GetFeedData(It.IsAny<string>(), _loggerMock.Object), Times.Once);
 
             _feedDataMock.Verify(fdm => fdm.ArchiveFeedData(feedResponses, _loggerMock.Object), Times.Once);
