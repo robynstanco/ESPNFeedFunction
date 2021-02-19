@@ -24,8 +24,9 @@
   <ul>
     <li>C#, .NET Core 3.1</li>
     <li>Logging, Configuration, & Dependency Injection</li>
-    <li>Azure CosmosDB</li>
     <li>Azure Functions</li>
+    <li>Azure CosmosDB</li>
+    <li>Azure Storage Explorer</li>
     <li>Azure Application Insights</li>
     <li>Azure DevOps CI/CD</li>
     <li>LINQ</li>
@@ -40,11 +41,13 @@
       <ul>
         <li>Visual Studio</li>
         <li>Postman</li>
+        <li>Azure Storage Explorer</li>
       </ul>
     </li>
     <li>Ensure nuget packages are restored and ready to use.</li>
+    <li>Create & configure a local.settings.json [copy from settings.json stub]</li>
+    <li>Use Azure Storage Explorer to create a ESPNFeedDB & Archive Container</li>
     <li>Build, Run Tests, Run Application locally.</li>
-    <li>Utilize Postman Collection to call the API.</li>
+    <li>Utilize Postman Collection to call the API locally.</li>
   </ol>
-  <p>Note: see repository <a href="https://github.com/robynstanco/ESPNFeedFunction/wiki">Wiki</a> for detailed Architecture, Design, and Implementation</p> 
 </div>
