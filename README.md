@@ -27,6 +27,7 @@
     <li>Azure CosmosDB</li>
     <li>Azure Functions</li>
     <li>Azure Application Insights</li>
+    <li>Azure DevOps CI/CD</li>
     <li>LINQ</li>
     <li>Unit Testing with Moq & MSTest Frameworks, Arrange/Act/Assert Pattern</li>
     <li>Postman</li>
