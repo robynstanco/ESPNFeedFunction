@@ -12,6 +12,6 @@ namespace ESPNFeed.Interfaces
     {
         Task<List<FeedResponse>> GetFeed(FeedRequest feedRequest, ILogger log);
         string GetFeedURL(FeedEnum feed, ILogger log);
-        List<FeedResponse> MapSyndicationFeedToFeedResponses(SyndicationFeed feed, int maxResults, ILogger log);
+        List<FeedResponse> MapSyndicationFeedToFeedResponses(SyndicationFeed feed, FeedRequest feedRequest, ILogger log);
     }
 }

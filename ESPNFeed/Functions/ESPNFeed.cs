@@ -15,16 +15,16 @@ using System.Threading.Tasks;
 
 namespace ESPNFeed.Functions
 {
-    public class RequestESPNFeed
+    public class ESPNFeed
     {
         IFeedLogic _feedLogic;
-        public RequestESPNFeed(IFeedLogic feedLogic)
+        public ESPNFeed(IFeedLogic feedLogic)
         {
             _feedLogic = feedLogic;
         }
 
-        [FunctionName(nameof(RequestESPNFeed))]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = nameof(RequestESPNFeed))] HttpRequest request, ILogger log)
+        [FunctionName(nameof(ESPNFeed))]
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = nameof(ESPNFeed))] HttpRequest request, ILogger log)
         {
             try
             {

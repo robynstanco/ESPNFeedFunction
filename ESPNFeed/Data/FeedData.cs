@@ -12,31 +12,19 @@ namespace ESPNFeed.Data
 {
     public class FeedData : IFeedData
     {
-        private string _espnFeedContainerName;
         public string ESPNFeedContainerName
         {
             get
             {
-                if (_espnFeedContainerName == null)
-                {
-                    _espnFeedContainerName = Environment.GetEnvironmentVariable(nameof(ESPNFeedContainerName));
-                }
-
-                return _espnFeedContainerName;
+                return Environment.GetEnvironmentVariable(nameof(ESPNFeedContainerName));
             }
         }
 
-        private string _espnFeedDBName;
         public string ESPNFeedDBName
         {
             get
             {
-                if(_espnFeedDBName == null)
-                {
-                    _espnFeedDBName = Environment.GetEnvironmentVariable(nameof(ESPNFeedDBName));
-                }
-
-                return _espnFeedDBName;
+                return Environment.GetEnvironmentVariable(nameof(ESPNFeedDBName));
             }
         }
 

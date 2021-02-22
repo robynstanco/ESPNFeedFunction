@@ -32,7 +32,7 @@ namespace ESPNFeed.Logic
 
             SyndicationFeed feed = _feedData.GetFeedData(feedURL, log);
 
-            List<FeedResponse> feedResponses = MapSyndicationFeedToFeedResponses(feed, feedRequest.MaxNumberOfResults, log);
+            List<FeedResponse> feedResponses = MapSyndicationFeedToFeedResponses(feed, feedRequest, log);
 
             if (feedRequest.Archive && feedResponses.Count > 0)
             {
@@ -64,18 +64,19 @@ namespace ESPNFeed.Logic
         /// <param name="maxResults">requested max results to map</param>
         /// <param name="log">logger instance</param>
         /// <returns>mapped feed responses</returns>
-        public List<FeedResponse> MapSyndicationFeedToFeedResponses(SyndicationFeed feed, int maxResults, ILogger log)
+        public List<FeedResponse> MapSyndicationFeedToFeedResponses(SyndicationFeed feed, FeedRequest feedRequest, ILogger log)
         {
             List<FeedResponse> feedResponses = new List<FeedResponse>();
 
-            foreach (SyndicationItem item in feed.Items.Take(maxResults))
+            foreach (SyndicationItem item in feed.Items.Take(feedRequest.MaxNumberOfResults))
             {
                 feedResponses.Add(new FeedResponse()
                 {
                     Title = item.Title.Text,
                     Description = item.Summary.Text,
                     Link = item.Links.Count == 0 ? string.Empty : item.Links[0].Uri.AbsoluteUri, //only first url needed (often only one entry anyway)
-                    id = item.Title.Text
+                    id = item.Title.Text,
+                    Feed = feedRequest.Feed
                 });
             }
 

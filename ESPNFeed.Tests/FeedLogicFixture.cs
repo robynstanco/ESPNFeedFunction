@@ -28,6 +28,7 @@ namespace ESPNFeed.Tests
 
             _feedDataMock = new Mock<IFeedData>();
 
+            //Setup GetFeedData with dummy syndication feed.
             _feedDataMock.Setup(fdm => fdm.GetFeedData(It.IsAny<string>(), _loggerMock.Object))
                 .Returns(new SyndicationFeed()
                 { 
@@ -55,16 +56,15 @@ namespace ESPNFeed.Tests
 
             List<FeedResponse> feedResponses = await _feedLogic.GetFeed(feedRequest, _loggerMock.Object);
 
+            //Confirm Mapping of syndicationfeed => feedresponse
             Assert.AreEqual(1, feedResponses.Count);
             Assert.AreEqual("title", feedResponses[0].Title);
             Assert.AreEqual("summary", feedResponses[0].Description);
+            Assert.AreEqual(FeedEnum.MLB, feedResponses[0].Feed);
+
+            VerifyLoggerMockLoggedInformation(2);
 
             _feedDataMock.Verify(fdm => fdm.GetFeedData(It.IsAny<string>(), _loggerMock.Object), Times.Once);
-
-            _loggerMock.Verify(l => l.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(),
-                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()), Times.Exactly(2));
-
-            _loggerMock.VerifyNoOtherCalls();
 
             _feedDataMock.VerifyNoOtherCalls();
         }
@@ -81,14 +81,11 @@ namespace ESPNFeed.Tests
 
             List<FeedResponse> feedResponses = await _feedLogic.GetFeed(feedRequest, _loggerMock.Object);
 
+            VerifyLoggerMockLoggedInformation(2);
+
             _feedDataMock.Verify(fdm => fdm.GetFeedData(It.IsAny<string>(), _loggerMock.Object), Times.Once);
 
             _feedDataMock.Verify(fdm => fdm.ArchiveFeedData(feedResponses, _loggerMock.Object), Times.Once);
-
-            _loggerMock.Verify(l => l.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(),
-                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()), Times.Exactly(2));
-
-            _loggerMock.VerifyNoOtherCalls();
 
             _feedDataMock.VerifyNoOtherCalls();
         }
@@ -98,12 +95,17 @@ namespace ESPNFeed.Tests
         {
             _feedLogic.GetFeedURL(FeedEnum.NBA, _loggerMock.Object);
 
-            _loggerMock.Verify(l => l.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(),
-                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()), Times.Once);
-
-            _loggerMock.VerifyNoOtherCalls();
+            VerifyLoggerMockLoggedInformation(1);
 
             _feedDataMock.VerifyNoOtherCalls();
+        }
+
+        private void VerifyLoggerMockLoggedInformation(int times)
+        {
+            _loggerMock.Verify(l => l.Log(LogLevel.Information, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(),
+                (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()), Times.Exactly(times));
+
+            _loggerMock.VerifyNoOtherCalls();
         }
     }
 }
