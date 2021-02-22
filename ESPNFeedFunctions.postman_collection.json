@@ -17,10 +17,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"MaxNumberOfResults\": 20,\n    \"Feed\": \"NBA\",\n    \"Archive\": true\n}"
+					"raw": "{\n\t\"MaxNumberOfResults\": 2,\n    \"Feed\": \"MLB\",\n    \"Archive\": false\n}"
 				},
 				"url": {
-					"raw": "http://localhost:7071/api/RequestESPNFeed",
+					"raw": "http://localhost:7071/api/ESPNFeed",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -28,7 +28,7 @@
 					"port": "7071",
 					"path": [
 						"api",
-						"RequestESPNFeed"
+						"ESPNFeed"
 					]
 				}
 			},
