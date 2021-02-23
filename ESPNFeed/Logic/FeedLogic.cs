@@ -19,6 +19,16 @@ namespace ESPNFeed.Logic
             _feedData = feedData;
         }
 
+        public List<FeedResponse> GetArchiveFeed(int pageSize, int pageNumber, FeedEnum feed, ILogger log)
+        {
+            int excludeRecords = (pageNumber * pageSize) - pageSize;
+
+            List<FeedResponse> archivedResponses = _feedData.GetArchiveFeed(pageSize, excludeRecords, feed, log);
+
+            return archivedResponses;
+        }
+
+
         /// <summary>
         /// Get & map the feed responses based on the given feed request. 
         /// Archive feeds only if requested.

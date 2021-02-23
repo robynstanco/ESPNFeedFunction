@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESPNFeed", "ESPNFeed\ESPNFeed.csproj", "{FCACA304-BB7D-4EAF-A5E2-23F24B002F37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESPNFeed.Tests", "ESPNFeed.Tests\ESPNFeed.Tests.csproj", "{32B6793B-3C74-4F5D-8057-B16D46CF3AB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESPNFeed.Tests", "ESPNFeed.Tests\ESPNFeed.Tests.csproj", "{32B6793B-3C74-4F5D-8057-B16D46CF3AB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

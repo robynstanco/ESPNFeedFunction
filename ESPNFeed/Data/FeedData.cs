@@ -1,9 +1,11 @@
-﻿using ESPNFeed.Interfaces;
+﻿using ESPNFeed.Enums;
+using ESPNFeed.Interfaces;
 using ESPNFeed.Models.Outputs;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 using System.Xml;
@@ -12,7 +14,7 @@ namespace ESPNFeed.Data
 {
     public class FeedData : IFeedData
     {
-        public string ESPNFeedContainerName
+        private string ESPNFeedContainerName
         {
             get
             {
@@ -20,7 +22,7 @@ namespace ESPNFeed.Data
             }
         }
 
-        public string ESPNFeedDBName
+        private string ESPNFeedDBName
         {
             get
             {
@@ -52,6 +54,24 @@ namespace ESPNFeed.Data
             }
 
             log.LogInformation("Archived {0} " + nameof(FeedResponse), feedResponses.Count);
+        }
+
+        /// <summary>
+        /// Get the archived feed responses for given feed parameters. Pagination applied to query.
+        /// </summary>
+        /// <param name="pageSize">entried per page</param>
+        /// <param name="pageNumber">current page</param>
+        /// <param name="feed">feed to find</param>
+        /// <param name="log">logger instance</param>
+        /// <returns>archived feed responses</returns>
+        public List<FeedResponse> GetArchiveFeed(int pageSize, int excludeRecords, FeedEnum feed, ILogger log)
+        {
+            List<FeedResponse> archivedFeedResponses = _cosmosContainer.GetItemLinqQueryable<FeedResponse>(true)
+                .Where(fr => fr.Feed == feed).Skip(excludeRecords).Take(pageSize).ToList();
+
+            log.LogInformation("Grabbed {0} archived " + nameof(FeedResponse), archivedFeedResponses.Count);
+
+            return archivedFeedResponses;
         }
 
         /// <summary>

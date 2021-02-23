@@ -15,16 +15,22 @@ using System.Threading.Tasks;
 
 namespace ESPNFeed.Functions
 {
-    public class ESPNFeed
+    public class Feed
     {
         IFeedLogic _feedLogic;
-        public ESPNFeed(IFeedLogic feedLogic)
+        public Feed(IFeedLogic feedLogic)
         {
             _feedLogic = feedLogic;
         }
 
-        [FunctionName(nameof(ESPNFeed))]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = nameof(ESPNFeed))] HttpRequest request, ILogger log)
+        /// <summary>
+        /// Deserialize request and perform logic to retrieve Feeds from ESPN Rss
+        /// </summary>
+        /// <param name="request">the generic httprequest to deserialize</param>
+        /// <param name="log">ilogger instance</param>
+        /// <returns>OkObjectResult of feed responses</returns>
+        [FunctionName(nameof(Feed))]
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = nameof(Feed))] HttpRequest request, ILogger log)
         {
             try
             {

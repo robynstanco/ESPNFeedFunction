@@ -8,10 +8,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 
-namespace ESPNFeed.Tests
+namespace ESPNFeed.Tests.Logic
 {
     [TestClass]
     public class FeedLogicFixture
@@ -24,29 +23,31 @@ namespace ESPNFeed.Tests
         [TestInitialize]
         public void Initialize()
         {
+            Environment.SetEnvironmentVariable("MLB", "someRssFeedUrl");
+
             _loggerMock = new Mock<ILogger>();
 
             _feedDataMock = new Mock<IFeedData>();
 
-            //Setup GetFeedData with dummy syndication feed.
-            _feedDataMock.Setup(fdm => fdm.GetFeedData(It.IsAny<string>(), _loggerMock.Object))
-                .Returns(new SyndicationFeed()
-                { 
-                    Items = new List<SyndicationItem>() 
-                    { 
-                        new SyndicationItem() 
-                        { 
-                            Title = new TextSyndicationContent("title"),
-                            Summary = new TextSyndicationContent("summary")
-                        } 
-                    } 
-                });
+            _feedDataMock.Setup(fdm => fdm.GetFeedData(It.IsAny<string>(), _loggerMock.Object)).Returns(DataGenerator.GetSyndicationFeed());
 
             _feedLogic = new FeedLogic(_feedDataMock.Object);
         }
 
         [TestMethod]
-        public async Task GetFeedCallsDataMapsSyndicationFeedAndLogsInformation()
+        public void GettingArchiveFeedCallsData()
+        {
+            _feedLogic.GetArchiveFeed(1, 2, FeedEnum.MLB, _loggerMock.Object);
+
+            _feedDataMock.Verify(fdm => fdm.GetArchiveFeed(1, 1, FeedEnum.MLB, _loggerMock.Object), Times.Once);//skip 1 record
+
+            _feedDataMock.VerifyNoOtherCalls();
+
+            _loggerMock.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public async Task GettingFeedCallsDataMapsSyndicationFeedAndLogsInformation()
         {
             FeedRequest feedRequest = new FeedRequest() 
             { 
@@ -56,21 +57,21 @@ namespace ESPNFeed.Tests
 
             List<FeedResponse> feedResponses = await _feedLogic.GetFeed(feedRequest, _loggerMock.Object);
 
-            //Confirm Mapping of syndicationfeed => feedresponse
             Assert.AreEqual(1, feedResponses.Count);
+            Assert.AreEqual("title", feedResponses[0].id);
             Assert.AreEqual("title", feedResponses[0].Title);
             Assert.AreEqual("summary", feedResponses[0].Description);
             Assert.AreEqual(FeedEnum.MLB, feedResponses[0].Feed);
 
             VerifyLoggerMockLoggedInformation(2);
 
-            _feedDataMock.Verify(fdm => fdm.GetFeedData(It.IsAny<string>(), _loggerMock.Object), Times.Once);
+            _feedDataMock.Verify(fdm => fdm.GetFeedData("someRssFeedUrl", _loggerMock.Object), Times.Once);
 
             _feedDataMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
-        public async Task GetFeedWithArchiveCallsData()
+        public async Task GettingFeedWithArchiveCallsDataAndLogsInformation()
         {
             FeedRequest feedRequest = new FeedRequest()
             {
@@ -91,9 +92,11 @@ namespace ESPNFeed.Tests
         }
 
         [TestMethod]
-        public void GetFeedURLLogsInformation()
+        public void GettingFeedURLIsSuccessfulAndLogsInformation()
         {
-            _feedLogic.GetFeedURL(FeedEnum.NBA, _loggerMock.Object);
+            string feedUrl = _feedLogic.GetFeedURL(FeedEnum.MLB, _loggerMock.Object);
+
+            Assert.AreEqual("someRssFeedUrl", feedUrl);
 
             VerifyLoggerMockLoggedInformation(1);
 
