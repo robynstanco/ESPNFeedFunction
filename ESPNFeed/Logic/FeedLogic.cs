@@ -19,6 +19,14 @@ namespace ESPNFeed.Logic
             _feedData = feedData;
         }
 
+        /// <summary>
+        /// Calculate records to exclude for pagination. Get archived responses from data.
+        /// </summary>
+        /// <param name="pageSize">entries per page</param>
+        /// <param name="pageNumber">current page</param>
+        /// <param name="feed">feed selection</param>
+        /// <param name="log">logger instance</param>
+        /// <returns>archived feed responses</returns>
         public List<FeedResponse> GetArchiveFeed(int pageSize, int pageNumber, FeedEnum feed, ILogger log)
         {
             int excludeRecords = (pageNumber * pageSize) - pageSize;
@@ -27,7 +35,6 @@ namespace ESPNFeed.Logic
 
             return archivedResponses;
         }
-
 
         /// <summary>
         /// Get & map the feed responses based on the given feed request. 
