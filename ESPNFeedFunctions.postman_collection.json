@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "ESPNFeedFunctions",
+			"name": "Feed",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -17,10 +17,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"MaxNumberOfResults\": 2,\n    \"Feed\": \"MLB\",\n    \"Archive\": false\n}"
+					"raw": "{\n\t\"MaxNumberOfResults\": 3,\n    \"Feed\": \"MLB\",\n    \"Archive\": true\n}"
 				},
 				"url": {
-					"raw": "http://localhost:7071/api/ESPNFeed",
+					"raw": "http://localhost:7071/api/Feed",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -28,7 +28,47 @@
 					"port": "7071",
 					"path": [
 						"api",
-						"ESPNFeed"
+						"Feed"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Archive",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7071/api/Archive?feed=MLB&pageNumber=2&pageSize=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"Archive"
+					],
+					"query": [
+						{
+							"key": "feed",
+							"value": "MLB"
+						},
+						{
+							"key": "pageNumber",
+							"value": "2"
+						},
+						{
+							"key": "pageSize",
+							"value": "2"
+						}
 					]
 				}
 			},
