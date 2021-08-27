@@ -22,11 +22,11 @@ namespace ESPNFeed
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            //Add dependency injection for data/logic layers
+            //Register custom service dependencies
             builder.Services.AddSingleton<IFeedData, FeedData>();
             builder.Services.AddSingleton<IFeedLogic, FeedLogic>();
 
-            //Add DI for CosmosDB instance
+            //Register dependency for CosmosDB instance
             builder.Services.AddSingleton((s) =>
             {
                 CosmosClientBuilder cosmosClientBuilder = new CosmosClientBuilder(ESPNFeedDBConnectionString);
