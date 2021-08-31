@@ -26,7 +26,7 @@ namespace ESPNFeed.Logic
         /// <param name="pageNumber">current page</param>
         /// <param name="feed">feed selection</param>
         /// <param name="log">logger instance</param>
-        /// <returns>archived feed responses</returns>
+        /// <returns>paginated archived feed responses</returns>
         public List<FeedResponse> GetArchiveFeed(int pageSize, int pageNumber, FeedEnum feed, ILogger log)
         {
             int excludeRecords = (pageNumber * pageSize) - pageSize;
@@ -37,12 +37,11 @@ namespace ESPNFeed.Logic
         }
 
         /// <summary>
-        /// Get & map the feed responses based on the given feed request. 
-        /// Archive feeds only if requested.
+        /// Get & map the feed responses based on the given feed request. Archive feeds only if requested.
         /// </summary>
         /// <param name="feedRequest">the feed request</param>
         /// <param name="log">logger instance</param>
-        /// <returns></returns>
+        /// <returns>feed responses for given feed request</returns>
         public async Task<List<FeedResponse>> GetFeed(FeedRequest feedRequest, ILogger log)
         {
             string feedURL = GetFeedURL(feedRequest.Feed, log);
@@ -64,7 +63,7 @@ namespace ESPNFeed.Logic
         /// </summary>
         /// <param name="feed">feed enum</param>
         /// <param name="log">logger instance</param>
-        /// <returns></returns>
+        /// <returns>feed url</returns>
         public string GetFeedURL(FeedEnum feed, ILogger log)
         {
             string feedURL = Environment.GetEnvironmentVariable(feed.ToString());

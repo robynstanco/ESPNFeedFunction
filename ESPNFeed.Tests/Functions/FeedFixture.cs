@@ -39,7 +39,8 @@ namespace ESPNFeed.Tests.Functions
         [TestCleanup]
         public void Cleanup()
         {
-            VerifyNoOtherLogicOrLogCalls();
+            _feedLogicMock.VerifyNoOtherCalls();
+            _loggerMock.VerifyNoOtherCalls();
         }
 
         [TestMethod]
@@ -126,12 +127,6 @@ namespace ESPNFeed.Tests.Functions
         {
             _loggerMock.Verify(l => l.Log(level, It.IsAny<EventId>(), It.IsAny<It.IsAnyType>(), It.IsAny<Exception>(),
                 (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()), Times.Exactly(times));
-        }
-
-        private void VerifyNoOtherLogicOrLogCalls()
-        {
-            _feedLogicMock.VerifyNoOtherCalls();
-            _loggerMock.VerifyNoOtherCalls();
         }
     }
 }

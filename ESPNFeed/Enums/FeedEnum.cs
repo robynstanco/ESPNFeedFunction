@@ -1,5 +1,8 @@
 ﻿namespace ESPNFeed.Enums
 {
+    /// <summary>
+    /// All possible ESPN feeds denoted here.
+    /// </summary>
     public enum FeedEnum : int
     {
         MLB = 1,

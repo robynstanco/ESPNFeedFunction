@@ -14,6 +14,9 @@ namespace ESPNFeed.Data
 {
     public class FeedData : IFeedData
     {
+        /// <summary>
+        /// Cosmos DB Container name.
+        /// </summary>
         private string ESPNFeedContainerName
         {
             get
@@ -22,6 +25,9 @@ namespace ESPNFeed.Data
             }
         }
 
+        /// <summary>
+        /// Cosmos DB name.
+        /// </summary>
         private string ESPNFeedDBName
         {
             get
@@ -42,7 +48,7 @@ namespace ESPNFeed.Data
         }
 
         /// <summary>
-        /// Archive (upsert) the feed responses to the CosmosClient via the CosmosContainer.
+        /// Archive (upsert) the feed responses to the CosmosClient via the Cosmos Container.
         /// </summary>
         /// <param name="feedResponses">responses to archive</param>
         /// <param name="log">logger instance</param>
@@ -53,23 +59,25 @@ namespace ESPNFeed.Data
                 await _cosmosContainer.UpsertItemAsync(feedResponse);
             }
 
-            log.LogInformation("Archived {0} " + nameof(FeedResponse), feedResponses.Count);
+            log.LogInformation("Archived {0} feed.", feedResponses.Count);
         }
 
         /// <summary>
         /// Get the archived feed responses for given feed parameters. Pagination applied to query.
         /// </summary>
-        /// <param name="pageSize">entried per page</param>
-        /// <param name="pageNumber">current page</param>
+        /// <param name="pageSize">entries per page</param>
+        /// <param name="excludeRecords">records to exclude from pagination</param>
         /// <param name="feed">feed to find</param>
         /// <param name="log">logger instance</param>
         /// <returns>archived feed responses</returns>
         public List<FeedResponse> GetArchiveFeed(int pageSize, int excludeRecords, FeedEnum feed, ILogger log)
         {
             List<FeedResponse> archivedFeedResponses = _cosmosContainer.GetItemLinqQueryable<FeedResponse>(true)
-                .Where(fr => fr.Feed == feed).Skip(excludeRecords).Take(pageSize).ToList();
+                .Where(fr => fr.Feed == feed)
+                .Skip(excludeRecords)
+                .Take(pageSize).ToList();
 
-            log.LogInformation("Grabbed {0} archived " + nameof(FeedResponse), archivedFeedResponses.Count);
+            log.LogInformation("Grabbed {0} archived feeds.", archivedFeedResponses.Count);
 
             return archivedFeedResponses;
         }
@@ -88,7 +96,7 @@ namespace ESPNFeed.Data
 
             reader.Close();
 
-            log.LogInformation("Loaded the " + nameof(SyndicationFeed) + ".");
+            log.LogInformation("Loaded the feed.");
 
             return feed;
         }

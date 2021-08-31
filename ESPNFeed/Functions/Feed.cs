@@ -55,7 +55,7 @@ namespace ESPNFeed.Functions
             {
                 log.LogError(argsNullEx, argsNullEx.Message);
 
-                return new BadRequestObjectResult("Please enter a valid Feed!");
+                return new BadRequestObjectResult("Please enter a valid feed!");
             }
             catch(CosmosException cosmosEx)
             {

@@ -12,6 +12,9 @@ namespace ESPNFeed
 {
     public class Startup : FunctionsStartup
     {
+        /// <summary>
+        /// CosmosDB Connection String
+        /// </summary>
         public string ESPNFeedDBConnectionString 
         { 
             get
@@ -20,6 +23,10 @@ namespace ESPNFeed
             }
         }
 
+        /// <summary>
+        /// Configure services via the builder.
+        /// </summary>
+        /// <param name="builder">builder to configure</param>
         public override void Configure(IFunctionsHostBuilder builder)
         {
             //Register custom service dependencies
