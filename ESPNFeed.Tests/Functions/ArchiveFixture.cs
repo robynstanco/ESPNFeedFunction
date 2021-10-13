@@ -21,6 +21,7 @@ namespace ESPNFeed.Tests.Functions
         [TestInitialize]
         public void Initialize()
         {
+            //Arrange
             _feedLogicMock = new Mock<IFeedLogic>();
 
             _httpRequestMock = new Mock<HttpRequest>();
@@ -43,9 +44,28 @@ namespace ESPNFeed.Tests.Functions
         [TestCategory("Happy Path")]
         public void RunningArchiveFunctionCallsLogicAndLogsInformation()
         {
+            //Arrange
+            _httpRequestMock.Setup(http => http.Query.ContainsKey("pageNumber")).Returns(true);
+            _httpRequestMock.Setup(http => http.Query.ContainsKey("pageSize")).Returns(true);
+
+            //Act
             _archive.Run(_httpRequestMock.Object, _loggerMock.Object);
 
+            //Assert
             _feedLogicMock.Verify(flm => flm.GetArchiveFeed(1, 2, FeedEnum.MLB, _loggerMock.Object), Times.Once);
+
+            VerifyLoggerMockLogged(LogLevel.Information, 2); //entry and query string parse
+        }
+
+        [TestMethod]
+        [TestCategory("Happy Path")]
+        public void RunningArchiveFunctionSetsDefaultPagingIfNotProvided()
+        {
+            //Act
+            _archive.Run(_httpRequestMock.Object, _loggerMock.Object);
+
+            //Assert [1, 10 defaults]
+            _feedLogicMock.Verify(flm => flm.GetArchiveFeed(10, 1, FeedEnum.MLB, _loggerMock.Object), Times.Once);
 
             VerifyLoggerMockLogged(LogLevel.Information, 2); //entry and query string parse
         }

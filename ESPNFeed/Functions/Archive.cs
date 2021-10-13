@@ -34,10 +34,10 @@ namespace ESPNFeed.Functions
             {
                 log.LogInformation("Requesting Archived ESPN Feed!");
 
-                //Parse query string parameters
-                FeedEnum feed = Enum.Parse<FeedEnum>(request.Query[nameof(feed)]);
-                int pageNumber = int.Parse(request.Query[nameof(pageNumber)]);
-                int pageSize = int.Parse(request.Query[nameof(pageSize)]);
+                //Parse query string parameters, default paging size if not provided.
+                FeedEnum feed =  Enum.Parse<FeedEnum>(request.Query[nameof(feed)]);
+                int pageNumber = request.Query.ContainsKey(nameof(pageNumber)) ? int.Parse(request.Query[nameof(pageNumber)]) : 1;
+                int pageSize = request.Query.ContainsKey(nameof(pageSize)) ? int.Parse(request.Query[nameof(pageSize)]) : 10;
 
                 if (feed == 0)
                 {
