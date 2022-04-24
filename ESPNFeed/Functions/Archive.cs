@@ -13,6 +13,9 @@ using System.Collections.Generic;
 
 namespace ESPNFeed.Functions
 {
+    /// <summary>
+    /// The Archive Function.
+    /// </summary>
     public class Archive
     {
         IFeedLogic _feedLogic;
@@ -24,9 +27,9 @@ namespace ESPNFeed.Functions
         /// <summary>
         /// Grab query string parameters and execute logic to get archived feed responses.
         /// </summary>
-        /// <param name="request">generic http request</param>
-        /// <param name="log">logger instance</param>
-        /// <returns>archived feed responses</returns>
+        /// <param name="request">The generic http request.</param>
+        /// <param name="log">The logger instance.</param>
+        /// <returns>The archived feed responses.</returns>
         [FunctionName(nameof(Archive))]
         public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = nameof(Archive))] HttpRequest request, ILogger log)
         {
@@ -44,7 +47,7 @@ namespace ESPNFeed.Functions
                     throw new ArgumentNullException();
                 }
 
-                log.LogInformation("Grabbed query string from " + nameof(HttpRequest) + ".");
+                log.LogInformation($"Grabbed query string from {nameof(HttpRequest)}.");
 
                 List<FeedResponse> archivedResponses = _feedLogic.GetArchiveFeed(pageSize, pageNumber, feed, log);
 
@@ -60,7 +63,7 @@ namespace ESPNFeed.Functions
             {
                 log.LogError(cosmosEx, cosmosEx.Message);
 
-                return new BadRequestObjectResult("Unable to get archived data: " + cosmosEx.Message);
+                return new BadRequestObjectResult($"Unable to get archived data: {cosmosEx.Message}");
             }
             catch (JsonReaderException jsonReaderEx)
             {
@@ -78,7 +81,7 @@ namespace ESPNFeed.Functions
             {
                 log.LogError(ex, ex.Message);
 
-                return new BadRequestObjectResult("An unexpected error occured: " + ex.Message);
+                return new BadRequestObjectResult($"An unexpected error occured: {ex.Message}");
             }
         }
     }

@@ -15,10 +15,10 @@ namespace ESPNFeed.Tests.Logic
     [TestClass]
     public class FeedLogicFixture
     {
-        private FeedLogic _feedLogic;
-
         private Mock<IFeedData> _feedDataMock;
         private Mock<ILogger> _loggerMock;
+
+        private FeedLogic _feedLogic;
 
         [TestInitialize]
         public void Initialize()
@@ -42,6 +42,7 @@ namespace ESPNFeed.Tests.Logic
         [TestCleanup]
         public void Cleanup()
         {
+            //Assert
             _feedDataMock.VerifyNoOtherCalls();
             _loggerMock.VerifyNoOtherCalls();
         }
@@ -69,7 +70,7 @@ namespace ESPNFeed.Tests.Logic
         public async Task GettingFeedCallsDataMapsSyndicationFeedAndLogsInformation()
         {
             //Arrange
-            FeedRequest feedRequest = new FeedRequest() 
+            var feedRequest = new FeedRequest() 
             { 
                 Feed = FeedEnum.MLB, 
                 MaxNumberOfResults = 1 
@@ -95,7 +96,7 @@ namespace ESPNFeed.Tests.Logic
         public async Task GettingFeedWithArchiveCallsDataAndLogsInformation()
         {
             //Arrange
-            FeedRequest feedRequest = new FeedRequest()
+            var feedRequest = new FeedRequest()
             {
                 Feed = FeedEnum.MLB,
                 MaxNumberOfResults = 1,

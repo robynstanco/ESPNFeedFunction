@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 
 namespace ESPNFeed.Functions
 {
+    /// <summary>
+    /// The Feed Function.
+    /// </summary>
     public class Feed
     {
         IFeedLogic _feedLogic;
@@ -24,11 +27,11 @@ namespace ESPNFeed.Functions
         }
 
         /// <summary>
-        /// Deserialize request and perform logic to retrieve Feeds from ESPN Rss
+        /// Deserialize request and perform logic to retrieve Feeds from ESPN Rss.
         /// </summary>
-        /// <param name="request">the generic httprequest to deserialize</param>
-        /// <param name="log">ilogger instance</param>
-        /// <returns>OkObjectResult of feed responses</returns>
+        /// <param name="request">The generic httprequest to deserialize.</param>
+        /// <param name="log">The logger instance.</param>
+        /// <returns>The feed responses.</returns>
         [FunctionName(nameof(Feed))]
         public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = nameof(Feed))] HttpRequest request, ILogger log)
         {
@@ -45,7 +48,7 @@ namespace ESPNFeed.Functions
                     throw new ArgumentNullException();
                 }
 
-                log.LogInformation("Deserialized " + nameof(FeedRequest) + ".");
+                log.LogInformation($"Deserialized {nameof(FeedRequest)}.");
 
                 List<FeedResponse> feedResponses = await _feedLogic.GetFeed(feedRequest, log);
 
@@ -61,7 +64,7 @@ namespace ESPNFeed.Functions
             {
                 log.LogError(cosmosEx, cosmosEx.Message);
 
-                return new BadRequestObjectResult("Unable to archive data: " + cosmosEx.Message);
+                return new BadRequestObjectResult($"Unable to archive data: {cosmosEx.Message}");
             }
             catch(JsonReaderException jsonReaderEx)
             {
@@ -79,7 +82,7 @@ namespace ESPNFeed.Functions
             {
                 log.LogError(ex, ex.Message);
 
-                return new BadRequestObjectResult("An unexpected error occured: " + ex.Message);
+                return new BadRequestObjectResult($"An unexpected error occured: {ex.Message}");
             }
         }
     }

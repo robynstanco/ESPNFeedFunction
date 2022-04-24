@@ -37,6 +37,7 @@ namespace ESPNFeed.Tests.Functions
         [TestCleanup]
         public void Cleanup()
         {
+            //Assert
             VerifyNoOtherLogicOrLogCalls();
         }
 

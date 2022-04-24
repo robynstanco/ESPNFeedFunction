@@ -12,6 +12,9 @@ using System.Xml;
 
 namespace ESPNFeed.Data
 {
+    /// <summary>
+    /// The Feed Data class.
+    /// </summary>
     public class FeedData : IFeedData
     {
         /// <summary>
@@ -50,11 +53,11 @@ namespace ESPNFeed.Data
         /// <summary>
         /// Archive (upsert) the feed responses to the CosmosClient via the Cosmos Container.
         /// </summary>
-        /// <param name="feedResponses">responses to archive</param>
-        /// <param name="log">logger instance</param>
+        /// <param name="feedResponses">The responses to archive.</param>
+        /// <param name="log">The logger instance.</param>
         public async Task ArchiveFeedData(List<FeedResponse> feedResponses, ILogger log)
         {
-            foreach (FeedResponse feedResponse in feedResponses)
+            foreach (var feedResponse in feedResponses)
             {
                 await _cosmosContainer.UpsertItemAsync(feedResponse);
             }
@@ -65,14 +68,14 @@ namespace ESPNFeed.Data
         /// <summary>
         /// Get the archived feed responses for given feed parameters. Pagination applied to query.
         /// </summary>
-        /// <param name="pageSize">entries per page</param>
-        /// <param name="excludeRecords">records to exclude from pagination</param>
-        /// <param name="feed">feed to find</param>
-        /// <param name="log">logger instance</param>
-        /// <returns>archived feed responses</returns>
+        /// <param name="pageSize">The entries per page.</param>
+        /// <param name="excludeRecords">The records to exclude from pagination.</param>
+        /// <param name="feed">The feed to find.</param>
+        /// <param name="log">The logger instance/</param>
+        /// <returns>The archived feed responses.</returns>
         public List<FeedResponse> GetArchiveFeed(int pageSize, int excludeRecords, FeedEnum feed, ILogger log)
         {
-            List<FeedResponse> archivedFeedResponses = _cosmosContainer.GetItemLinqQueryable<FeedResponse>(true)
+            var archivedFeedResponses = _cosmosContainer.GetItemLinqQueryable<FeedResponse>(true)
                 .Where(fr => fr.Feed == feed)
                 .Skip(excludeRecords)
                 .Take(pageSize).ToList();
@@ -83,16 +86,16 @@ namespace ESPNFeed.Data
         }
 
         /// <summary>
-        /// Read & load in the RSS feed via the given URL.
+        /// Read and load in the RSS feed via the given URL.
         /// </summary>
-        /// <param name="feedURL">url to read from</param>
-        /// <param name="log">logger instance</param>
-        /// <returns>loaded syndication (RSS) feed</returns>
+        /// <param name="feedURL">The Url to read from.</param>
+        /// <param name="log">The Logger instance.</param>
+        /// <returns>The loaded syndication (RSS) feed.</returns>
         public SyndicationFeed GetFeedData(string feedURL, ILogger log)
         {
-            XmlReader reader = XmlReader.Create(feedURL);
+            var reader = XmlReader.Create(feedURL);
 
-            SyndicationFeed feed = SyndicationFeed.Load(reader);
+            var feed = SyndicationFeed.Load(reader);
 
             reader.Close();
 

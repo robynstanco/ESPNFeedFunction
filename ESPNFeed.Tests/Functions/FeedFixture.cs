@@ -17,15 +17,16 @@ namespace ESPNFeed.Tests.Functions
     [TestClass]
     public class FeedFixture
     {
-        private Feed _feed;
-
         private Mock<IFeedLogic> _feedLogicMock;
         private Mock<HttpRequest> _httpRequestMock;
         private Mock<ILogger> _loggerMock;
 
+        private Feed _feed;
+
         [TestInitialize]
         public void Initialize()
         {
+            //Arrange
             _feedLogicMock = new Mock<IFeedLogic>();
 
             _httpRequestMock = new Mock<HttpRequest>();
@@ -39,6 +40,7 @@ namespace ESPNFeed.Tests.Functions
         [TestCleanup]
         public void Cleanup()
         {
+            //Assert
             _feedLogicMock.VerifyNoOtherCalls();
             _loggerMock.VerifyNoOtherCalls();
         }
@@ -47,8 +49,10 @@ namespace ESPNFeed.Tests.Functions
         [TestCategory("Happy Path")]
         public async Task RunningFeedFunctionCallsLogicAndLogsInformation()
         {
+            //Act
             await _feed.Run(_httpRequestMock.Object, _loggerMock.Object);
 
+            //Assert
             VerifyFeedLogicMockGetFeedWithDefaultRequest();
             VerifyLoggerMockLogged(LogLevel.Information, 2); //entry & deserialization logs
         }
@@ -57,11 +61,14 @@ namespace ESPNFeed.Tests.Functions
         [TestCategory("Error Handling")]
         public async Task RunningFeedFunctionWithInvalidFeedLogsError()
         {
+            //Arrange
             _httpRequestMock.Setup(http => http.Body).Returns(DataGenerator.GetInvalidFeedBody());
 
+            //Act
             IActionResult result = await _feed.Run(_httpRequestMock.Object, _loggerMock.Object);
-            BadRequestObjectResult badRequest = result as BadRequestObjectResult;
+            var badRequest = result as BadRequestObjectResult;
 
+            //Assert
             Assert.AreEqual("Unable to deserialize the request!", badRequest.Value.ToString());
 
             VerifyLoggerMockLogged(LogLevel.Information, 1);//entry 
@@ -72,11 +79,14 @@ namespace ESPNFeed.Tests.Functions
         [TestCategory("Error Handling")]
         public async Task RunningFeedFunctionWithMalformedRequestLogsError()
         {
+            //Arrange
             _httpRequestMock.Setup(http => http.Body).Returns(DataGenerator.GetMalformedFeedBody());
-
+            
+            //Act
             IActionResult result = await _feed.Run(_httpRequestMock.Object, _loggerMock.Object);
-            BadRequestObjectResult badRequest = result as BadRequestObjectResult;
+            var badRequest = result as BadRequestObjectResult;
 
+            //Assert
             Assert.AreEqual("Unable to read the malformed request!", badRequest.Value.ToString());
 
             VerifyLoggerMockLogged(LogLevel.Information, 1);//entry
@@ -87,12 +97,15 @@ namespace ESPNFeed.Tests.Functions
         [TestCategory("Error Handling")]
         public async Task RunningFeedFunctionWithCosmosErrorLogsError()
         {
+            //Arrange
             _feedLogicMock.Setup(flm => flm.GetFeed(It.IsAny<FeedRequest>(), _loggerMock.Object))
                 .ThrowsAsync(new CosmosException("some cosmos exception", HttpStatusCode.BadRequest, 1, "1", 1));
 
+            //Act
             IActionResult result = await _feed.Run(_httpRequestMock.Object, _loggerMock.Object);
-            BadRequestObjectResult badRequest = result as BadRequestObjectResult;
+            var badRequest = result as BadRequestObjectResult;
 
+            //Assert
             Assert.AreEqual("Unable to archive data: some cosmos exception", badRequest.Value.ToString());
 
             VerifyFeedLogicMockGetFeedWithDefaultRequest();
@@ -104,12 +117,15 @@ namespace ESPNFeed.Tests.Functions
         [TestCategory("Error Handling")]
         public async Task RunningFeedFunctionWithUnexpectedErrorLogsError()
         {
+            //Arrange
             _feedLogicMock.Setup(flm => flm.GetFeed(It.IsAny<FeedRequest>(), _loggerMock.Object))
                 .ThrowsAsync(new Exception("some unexpected exception"));
 
+            //Act
             IActionResult result = await _feed.Run(_httpRequestMock.Object, _loggerMock.Object);
-            BadRequestObjectResult badRequest = result as BadRequestObjectResult;
+            var badRequest = result as BadRequestObjectResult;
 
+            //Assert
             Assert.AreEqual("An unexpected error occured: some unexpected exception", badRequest.Value.ToString());
 
             VerifyFeedLogicMockGetFeedWithDefaultRequest();
